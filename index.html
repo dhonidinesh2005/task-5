@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>South Indian Recipe Book</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
+</head>
+
+<body>
+    <header>
+        <h1>South Indian Recipe Book</h1>
+        <div style="margin: 1rem; text-align: center;">
+            <input type="text" id="search" placeholder="Search recipes..." style="padding: 0.5rem; width: 250px;">
+            <select id="categoryFilter" style="padding: 0.5rem;">
+                <option value="all">All Categories</option>
+                <option value="Breakfast">Breakfast</option>
+                <option value="Lunch">Lunch</option>
+                <option value="Dinner">Dinner</option>
+                <option value="Beverage">Beverage</option>
+            </select>
+        </div>
+    </header>
+
+    <main id="recipe-list">
+    </main>
+
+    <footer>
+        <p>&copy; 2025 South Indian Recipes</p>
+    </footer>
+</body>
+
+</html>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #fff9f5;
+        color: #333;
+    }
+
+    header {
+        background-color: #d9534f;
+        color: white;
+        padding: 1rem;
+        text-align: center;
+    }
+
+    main {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .recipe-card {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: transform 0.2s ease;
+    }
+
+    .recipe-card:hover {
+        transform: scale(1.02);
+    }
+
+    .recipe-card img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+
+    .recipe-content {
+        padding: 0.5rem 1rem;
+    }
+
+    .recipe-content h3 {
+        margin: 0.5rem 0;
+    }
+
+    .recipe-content ul {
+        margin: 0.5rem 0;
+        padding-left: 1.2rem;
+    }
+
+    footer {
+        text-align: center;
+        padding: 1rem;
+        background-color: #f2f2f2;
+    }
+
+    @media screen and (max-width: 600px) {
+        main {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+<script>
+    const recipes = [
+        {
+            name: "Masala Dosa",
+            description: "A crispy rice crepe filled with spicy potato masala.",
+            category: "Breakfast",
+            ingredients: ["2 cups rice", "1/2 cup urad dal", "Salt", "Potatoes", "Onions", "Spices"],
+            instructions: "Soak rice and dal, ferment, prepare dosa batter. Cook and stuff with spiced mashed potatoes."
+        },
+        {
+            name: "Idli Sambhar",
+            description: "Steamed rice cakes served with flavorful lentil curry.",
+            category: "Breakfast",
+            ingredients: ["1 cup urad dal", "2 cups idli rice", "Salt", "Toor dal", "Tamarind", "Sambar powder"],
+            instructions: "Ferment batter, steam idlis. Cook dal with tamarind and spices for sambar."
+        },
+        {
+            name: "Medu Vada",
+            description: "Deep-fried lentil donuts, crispy outside and soft inside.",
+            category: "Breakfast",
+            ingredients: ["1 cup urad dal", "Ginger", "Green chilies", "Curry leaves", "Salt"],
+            instructions: "Grind soaked dal, shape into donuts, deep fry until golden."
+        },
+        {
+            name: "Uttapam",
+            description: "Thick rice pancake topped with onions, tomatoes, and green chilies.",
+            category: "Breakfast",
+            ingredients: ["Dosa batter", "Onions", "Tomatoes", "Green chilies", "Coriander"],
+            instructions: "Spread batter thick on pan, top with veggies, cook until golden brown."
+        },
+        {
+            name: "Pongal",
+            description: "A comforting rice and lentil dish seasoned with pepper and cumin.",
+            category: "Breakfast",
+            ingredients: ["Rice", "Moong dal", "Pepper", "Cumin", "Ghee", "Cashews"],
+            instructions: "Cook rice and dal together. Season with fried spices and ghee."
+        },
+        {
+            name: "Upma",
+            description: "A savory semolina dish tempered with spices and veggies.",
+            category: "Breakfast",
+            ingredients: ["Sooji (semolina)", "Onions", "Mustard seeds", "Green chilies", "Water"],
+            instructions: "Roast sooji, cook with sautéed spices and hot water until fluffy."
+        },
+        {
+            name: "Rasam",
+            description: "Spicy, tangy South Indian soup made with tamarind and tomatoes.",
+            category: "Lunch",
+            ingredients: ["Tamarind", "Tomatoes", "Rasam powder", "Garlic", "Coriander"],
+            instructions: "Boil tamarind water, add tomatoes, rasam powder, simmer and temper."
+        },
+        {
+            name: "Avial",
+            description: "Mixed vegetables in coconut yogurt gravy, a Kerala specialty.",
+            category: "Lunch",
+            ingredients: ["Mixed veggies", "Grated coconut", "Green chilies", "Curry leaves", "Yogurt"],
+            instructions: "Boil vegetables, mix with ground coconut paste and yogurt, temper."
+        },
+        {
+            name: "Chettinad Chicken Curry",
+            description: "Spicy chicken curry with freshly ground Chettinad masala.",
+            category: "Dinner",
+            ingredients: ["Chicken", "Chettinad masala", "Onions", "Tomatoes", "Garlic"],
+            instructions: "Cook chicken with sautéed onions, tomatoes and spice mix until tender."
+        },
+        {
+            name: "Filter Coffee",
+            description: "Strong South Indian brewed coffee served in a traditional tumbler.",
+            category: "Beverage",
+            ingredients: ["Filter coffee powder", "Hot water", "Milk", "Sugar"],
+            instructions: "Brew coffee decoction, mix with hot milk and sugar, serve frothy."
+        }
+    ];
+
+    const container = document.getElementById('recipe-list');
+    const searchInput = document.getElementById('search');
+    const categoryFilter = document.getElementById('categoryFilter');
+
+    function displayRecipes(filterText = '', category = 'all') {
+        container.innerHTML = '';
+        recipes
+            .filter(recipe =>
+                recipe.name.toLowerCase().includes(filterText.toLowerCase()) &&
+                (category === 'all' || recipe.category === category)
+            )
+            .forEach(recipe => {
+                const card = document.createElement('div');
+                card.className = 'recipe-card';
+                card.innerHTML = `
+                    <img loading="lazy" src="${recipe.img}" alt="${recipe.name}">
+                    <div class="recipe-content">
+                        <h3>${recipe.name}</h3>
+                        <p>${recipe.description}</p>
+                        <h4>Ingredients:</h4>
+                        <ul>${recipe.ingredients.map(item => `<li>${item}</li>`).join('')}</ul>
+                        <h4>Instructions:</h4>
+                        <p>${recipe.instructions}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        displayRecipes();
+        searchInput.addEventListener('input', () => {
+            displayRecipes(searchInput.value, categoryFilter.value);
+        });
+        categoryFilter.addEventListener('change', () => {
+            displayRecipes(searchInput.value, categoryFilter.value);
+        });
+    });
+</script>
